@@ -9,12 +9,15 @@ public class PlayerController : MonoBehaviour
 
     public float speed = 0;
     public TextMeshProUGUI countText;
+    public TextMeshProUGUI timeText;
     public GameObject winTextObject;
 
     private Rigidbody rigidbody;
     private int count;
     private float movementX;
     private float movementY;
+    private bool startTimer = false;
+    private float timeRecorder = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -44,13 +47,20 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(0, 5, 0);
         }
 
+        if(startTimer == true)
+        {
+            timeRecorder += Time.deltaTime;
+            timeText.text = "Time: " + timeRecorder.ToString("F0") + "s";
+        }
+
     }
 
     void SetCountText()
     {
-        countText.text = "Count: " + count.ToString();
-        if(count >= 12) {
+        countText.text = "Count: " + count.ToString() + "/13";
+        if(count >= 13) {
             winTextObject.SetActive(true);
+            startTimer = false;
         }
     }
 
@@ -59,10 +69,15 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("PickUp"))
         {
+            if (startTimer == false)
+            {
+                startTimer = true;
+            }
             other.gameObject.SetActive(false);
             count++;
             SetCountText();
         }
+
     }
 
 }
